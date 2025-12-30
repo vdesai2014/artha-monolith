@@ -1,0 +1,40 @@
+# flyctl launch added from .gitignore
+# Python
+**/__pycache__
+**/*.py[cod]
+**/*$py.class
+**/.venv
+**/venv
+**/env
+**/.pytest_cache
+
+# Node
+**/node_modules
+**/frontend/node_modules
+
+# Build outputs
+**/static
+**/dist
+
+# Environment
+**/.env
+**/.env.local
+**/.env.*.local
+
+# IDE
+**/.vscode
+**/.idea
+**/*.swp
+**/*.swo
+
+# OS
+**/.DS_Store
+**/Thumbs.db
+
+# Fly.io
+**/.fly
+
+# flyctl launch added from .pytest_cache/.gitignore
+# Created by pytest automatically.
+.pytest_cache/**/*
+fly.toml
