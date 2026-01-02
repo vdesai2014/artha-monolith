@@ -1,69 +1,161 @@
 /**
- * artha.bot - Splash Page
- * Checks backend health and displays cute status
+ * artha - Landing Page
+ * Clean, fast rotor animation that follows mouse
  */
 
-interface HealthResponse {
-  status: string;
-  service: string;
-  version: string;
-  message: string;
+import './styles.css';
+
+// Animation state
+let targetRotation = 0;
+let currentRotation = 0;
+
+function createHeader(): string {
+  return `
+    <header class="header">
+      <nav class="nav-links">
+        <a class="nav-link" href="#about">About</a>
+        <a class="nav-link" href="#zippy">Zippy</a>
+        <a class="nav-link" href="#contact">Contact</a>
+      </nav>
+      <div class="nav-divider"></div>
+      <div class="nav-buttons">
+        <button class="btn btn-ghost">Log In</button>
+        <button class="btn btn-primary">Platform</button>
+      </div>
+    </header>
+  `;
 }
 
-async function checkHealth(): Promise<HealthResponse | null> {
-  try {
-    const response = await fetch('/api/health');
-    if (!response.ok) throw new Error('API not healthy');
-    return await response.json();
-  } catch {
-    return null;
+function createStatorTicks(): string {
+  const ticks: string[] = [];
+  const numTicks = 24;
+
+  for (let i = 0; i < numTicks; i++) {
+    const angle = (360 / numTicks) * i;
+    ticks.push(`<div class="stator-tick" style="transform: rotate(${angle}deg)"></div>`);
+  }
+
+  return ticks.join('');
+}
+
+function createRotorSpokes(): string {
+  const spokes: string[] = [];
+  const numSpokes = 6;
+
+  for (let i = 0; i < numSpokes; i++) {
+    const angle = (360 / numSpokes) * i;
+    spokes.push(`<div class="rotor-spoke" style="transform: rotate(${angle}deg)"></div>`);
+  }
+
+  return spokes.join('');
+}
+
+function createActuator(): string {
+  return `
+    <div class="actuator-container">
+      <!-- Stator (outer, stationary) -->
+      <div class="stator"></div>
+      <div class="stator-ticks">
+        ${createStatorTicks()}
+      </div>
+
+      <!-- Rotor (inner, spins with mouse) -->
+      <div class="rotor" id="rotor">
+        ${createRotorSpokes()}
+      </div>
+
+      <!-- Direction indicator -->
+      <div class="rotor-indicator" id="rotor-indicator"></div>
+
+      <!-- Center shaft -->
+      <div class="shaft"></div>
+    </div>
+  `;
+}
+
+function createHero(): string {
+  return `
+    <main class="main">
+      <div class="hero-left">
+        <h1 class="logo">artha</h1>
+        <p class="tagline">an open and accessible platform for AI robotics</p>
+      </div>
+      <div class="hero-right">
+        ${createActuator()}
+      </div>
+    </main>
+  `;
+}
+
+function updateRotation(clientX: number, clientY: number): void {
+  // Get actuator center position
+  const actuator = document.querySelector('.actuator-container');
+  if (!actuator) return;
+
+  const rect = actuator.getBoundingClientRect();
+  const centerX = rect.left + rect.width / 2;
+  const centerY = rect.top + rect.height / 2;
+
+  const dx = clientX - centerX;
+  const dy = clientY - centerY;
+
+  // Calculate angle from actuator center to pointer
+  targetRotation = Math.atan2(dy, dx) * (180 / Math.PI) + 90;
+}
+
+function handleMouseMove(e: MouseEvent): void {
+  updateRotation(e.clientX, e.clientY);
+}
+
+function handleTouchMove(e: TouchEvent): void {
+  if (e.touches.length > 0) {
+    updateRotation(e.touches[0].clientX, e.touches[0].clientY);
   }
 }
 
-function updateStatus(health: HealthResponse | null): void {
-  const statusText = document.getElementById('status-text');
-  const statusCard = document.getElementById('status-card');
-  const version = document.getElementById('version');
-
-  if (!statusText || !statusCard || !version) return;
-
-  if (health) {
-    statusText.innerHTML = `<strong>Online</strong> — ${health.message}`;
-    version.textContent = `v${health.version}`;
-  } else {
-    statusText.innerHTML = '<strong style="color: #ef4444;">Offline</strong> — Backend unreachable';
-    const dot = statusCard.querySelector('.status-dot') as HTMLElement;
-    if (dot) {
-      dot.style.background = '#ef4444';
-      dot.style.boxShadow = '0 0 10px #ef4444';
-    }
+function animateRotor(): void {
+  const rotor = document.getElementById('rotor');
+  const indicator = document.getElementById('rotor-indicator');
+  if (!rotor || !indicator) {
+    requestAnimationFrame(animateRotor);
+    return;
   }
+
+  // Fast, snappy interpolation
+  let diff = targetRotation - currentRotation;
+
+  // Handle angle wrapping for shortest path
+  while (diff > 180) diff -= 360;
+  while (diff < -180) diff += 360;
+
+  // Quick response - 0.2 = snappy, 0.05 = sluggish
+  currentRotation += diff * 0.15;
+
+  // Apply rotation - rotor spins, indicator points
+  rotor.style.transform = `translate(-50%, -50%) rotate(${currentRotation}deg)`;
+  indicator.style.transform = `rotate(${currentRotation}deg)`;
+
+  requestAnimationFrame(animateRotor);
 }
 
-function createParticles(): void {
-  const container = document.getElementById('particles');
-  if (!container) return;
+function init(): void {
+  const app = document.getElementById('app');
+  if (!app) return;
 
-  for (let i = 0; i < 15; i++) {
-    const particle = document.createElement('div');
-    particle.className = 'particle';
-    particle.style.left = `${Math.random() * 100}%`;
-    particle.style.animationDelay = `${Math.random() * 20}s`;
-    particle.style.animationDuration = `${15 + Math.random() * 10}s`;
-    container.appendChild(particle);
-  }
+  app.innerHTML = `
+    ${createHeader()}
+    ${createHero()}
+  `;
+
+  // Mouse tracking (desktop)
+  document.addEventListener('mousemove', handleMouseMove);
+
+  // Touch tracking (mobile)
+  document.addEventListener('touchmove', handleTouchMove, { passive: true });
+  document.addEventListener('touchstart', handleTouchMove, { passive: true });
+
+  // Start animation
+  animateRotor();
 }
 
-async function init(): Promise<void> {
-  createParticles();
-  const health = await checkHealth();
-  updateStatus(health);
-
-  // Refresh status every 30 seconds
-  setInterval(async () => {
-    const h = await checkHealth();
-    updateStatus(h);
-  }, 30000);
-}
-
-init();
+document.addEventListener('DOMContentLoaded', init);

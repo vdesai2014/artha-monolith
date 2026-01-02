@@ -1,0 +1,464 @@
+/* artha - Design System */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  /* The blackest black - OLED pure black */
+  --black: #000000;
+
+  /* Text colors */
+  --white: #ffffff;
+  --white-dim: rgba(255, 255, 255, 0.6);
+  --white-muted: rgba(255, 255, 255, 0.4);
+
+  /* Glass effect colors */
+  --glass-bg: rgba(255, 255, 255, 0.08);
+  --glass-border: rgba(255, 255, 255, 0.15);
+  --glass-hover: rgba(255, 255, 255, 0.12);
+
+  /* Accent */
+  --accent: #60a5fa;
+
+  /* Typography */
+  --font-main: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: var(--font-main);
+  background: var(--black);
+  color: var(--white);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#app {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ============================================
+   Header - Apple Liquid Glass Style
+   ============================================ */
+
+.header {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+
+  /* Liquid glass effect */
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid var(--glass-border);
+  border-radius: 50px;
+
+  /* Subtle inner glow */
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.1),
+    0 4px 30px rgba(0, 0, 0, 0.3);
+}
+
+.nav-links {
+  display: flex;
+  gap: 4px;
+}
+
+.nav-link {
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--white-dim);
+  text-decoration: none;
+  border-radius: 40px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.nav-link:hover {
+  color: var(--white);
+  background: var(--glass-hover);
+}
+
+.nav-divider {
+  width: 1px;
+  height: 24px;
+  background: var(--glass-border);
+  margin: 0 4px;
+}
+
+.nav-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.btn {
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: var(--font-main);
+  border-radius: 40px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.btn-ghost {
+  background: transparent;
+  border: none;
+  color: var(--white-dim);
+}
+
+.btn-ghost:hover {
+  color: var(--white);
+  background: var(--glass-hover);
+}
+
+.btn-primary {
+  background: var(--white);
+  border: none;
+  color: var(--black);
+}
+
+.btn-primary:hover {
+  background: rgba(255, 255, 255, 0.9);
+  transform: scale(1.02);
+}
+
+/* ============================================
+   Main Content - Split Layout
+   ============================================ */
+
+.main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 5%;
+  gap: 120px;
+}
+
+/* Left side - Logo & Tagline */
+.hero-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+  text-align: right;
+}
+
+.logo {
+  font-size: 72px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  margin-bottom: 16px;
+  color: var(--white);
+}
+
+.tagline {
+  font-size: 20px;
+  font-weight: 400;
+  color: var(--white-dim);
+  line-height: 1.5;
+  max-width: 400px;
+}
+
+/* Right side - Actuator Animation */
+.hero-right {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.actuator-container {
+  position: relative;
+  width: 300px;
+  height: 300px;
+}
+
+/* Stator - outer ring (stationary) */
+.stator {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Stator tick marks */
+.stator-ticks {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 280px;
+  height: 280px;
+}
+
+.stator-tick {
+  position: absolute;
+  width: 1px;
+  height: 12px;
+  background: rgba(255, 255, 255, 0.3);
+  top: 0;
+  left: 50%;
+  transform-origin: 50% 140px;
+}
+
+/* Rotor - inner spinning element */
+.rotor {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 70%);
+}
+
+/* Rotor spokes - clean radial lines */
+.rotor-spoke {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1px;
+  height: 70px;
+  background: linear-gradient(to top, transparent, rgba(255, 255, 255, 0.4));
+  transform-origin: 50% 0%;
+}
+
+/* Center dot */
+.shaft {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/* Rotation indicator - bright line showing direction */
+.rotor-indicator {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 2px;
+  height: 75px;
+  background: linear-gradient(to top, transparent 0%, var(--white) 100%);
+  transform-origin: 50% 0%;
+  transform: rotate(0deg);
+}
+
+/* ============================================
+   Mobile Responsive Styles
+   ============================================ */
+
+/* Tablet */
+@media (max-width: 900px) {
+  .main {
+    gap: 60px;
+  }
+
+  .logo {
+    font-size: 56px;
+  }
+
+  .tagline {
+    font-size: 18px;
+  }
+
+  .actuator-container {
+    width: 250px;
+    height: 250px;
+  }
+
+  .stator,
+  .stator-ticks {
+    width: 230px;
+    height: 230px;
+  }
+
+  .stator-tick {
+    height: 10px;
+    transform-origin: 50% 115px;
+  }
+
+  .rotor {
+    width: 130px;
+    height: 130px;
+  }
+
+  .rotor-spoke {
+    height: 55px;
+  }
+
+  .rotor-indicator {
+    height: 60px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  html, body {
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  /* Compact header for mobile */
+  .header {
+    top: 12px;
+    padding: 6px 12px;
+    gap: 6px;
+  }
+
+  .nav-links {
+    gap: 2px;
+  }
+
+  .nav-link {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+
+  .nav-divider {
+    margin: 0 2px;
+  }
+
+  .nav-buttons {
+    gap: 4px;
+  }
+
+  .btn {
+    padding: 8px 14px;
+    font-size: 13px;
+  }
+
+  /* Stack layout vertically */
+  .main {
+    flex-direction: column;
+    justify-content: center;
+    gap: 48px;
+    padding: 100px 24px 40px;
+    min-height: 100vh;
+  }
+
+  /* Center text on mobile */
+  .hero-left {
+    align-items: center;
+    text-align: center;
+    order: 1;
+  }
+
+  .logo {
+    font-size: 48px;
+    margin-bottom: 12px;
+  }
+
+  .tagline {
+    font-size: 16px;
+    max-width: 300px;
+  }
+
+  /* Animation above text on mobile */
+  .hero-right {
+    order: 0;
+  }
+
+  .actuator-container {
+    width: 200px;
+    height: 200px;
+  }
+
+  .stator,
+  .stator-ticks {
+    width: 180px;
+    height: 180px;
+  }
+
+  .stator-tick {
+    height: 8px;
+    transform-origin: 50% 90px;
+  }
+
+  .rotor {
+    width: 100px;
+    height: 100px;
+  }
+
+  .rotor-spoke {
+    height: 42px;
+  }
+
+  .rotor-indicator {
+    height: 48px;
+  }
+
+  .shaft {
+    width: 6px;
+    height: 6px;
+  }
+}
+
+/* Small mobile */
+@media (max-width: 380px) {
+  .logo {
+    font-size: 40px;
+  }
+
+  .tagline {
+    font-size: 14px;
+  }
+
+  .actuator-container {
+    width: 160px;
+    height: 160px;
+  }
+
+  .stator,
+  .stator-ticks {
+    width: 150px;
+    height: 150px;
+  }
+
+  .stator-tick {
+    height: 6px;
+    transform-origin: 50% 75px;
+  }
+
+  .rotor {
+    width: 80px;
+    height: 80px;
+  }
+
+  .rotor-spoke {
+    height: 32px;
+  }
+
+  .rotor-indicator {
+    height: 38px;
+  }
+}
